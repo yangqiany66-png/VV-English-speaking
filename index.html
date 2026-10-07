@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SpeakFlow — Speak English with Confidence</title>
+
+<style>
+
+:root{
+    --bg:#f7f7f3;
+    --surface:#ffffff;
+    --surface-soft:#f1f2ec;
+    --text:#17201b;
+    --muted:#737b75;
+    --green:#1f6b4f;
+    --green-dark:#15523b;
+    --green-soft:#dcece3;
+    --line:#e5e8e2;
+    --yellow:#f4c95d;
+    --red:#d96b62;
+    --shadow:0 12px 35px rgba(20,35,27,.07);
+    --radius:22px;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+button{
+    font:inherit;
+    cursor:pointer;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+.app{
+    min-height:100vh;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.navbar{
+    height:74px;
+    border-bottom:1px solid var(--line);
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(16px);
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 5%;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+    font-weight:800;
+}
+
+.logo-mark{
+    width:34px;
+    height:34px;
+    border-radius:11px;
+    background:var(--green);
+    color:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-weight:800;
+}
+
+.nav-links{
+    display:flex;
+    gap:8px;
+}
+
+.nav-btn{
+    border:0;
+    background:transparent;
+    padding:10px 16px;
+    border-radius:12px;
+    color:var(--muted);
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+    background:var(--surface-soft);
+    color:var(--text);
+}
+
+.profile{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#d7e7dd;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-weight:700;
+    color:var(--green-dark);
+}
+
+/* =========================
+   PAGE
+========================= */
+
+.page{
+    max-width:1250px;
+    margin:auto;
+    padding:48px 5% 80px;
+}
+
+.hidden{
+    display:none !important;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.hero{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:24px;
+    margin-bottom:25px;
+}
+
+.hero-main{
+    min-height:300px;
+    border-radius:30px;
+    padding:42px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e5efe8,
+            #f4f5ef
+        );
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.eyebrow{
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--green);
+}
+
+.hero h1{
+    font-size:46px;
+    line-height:1.05;
+    max-width:650px;
+    margin:16px 0;
+    letter-spacing:-2px;
+}
+
+.hero p{
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.7;
+    max-width:600px;
+}
+
+.primary-btn{
+    width:max-content;
+    margin-top:25px;
+
+    background:var(--green);
+    color:white;
+
+    border:0;
+    border-radius:13px;
+    padding:13px 20px;
+
+    font-weight:700;
+}
+
+.primary-btn:hover{
+    background:var(--green-dark);
+}
+
+.streak-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:30px;
+    padding:30px;
+    box-shadow:var(--shadow);
+}
+
+.streak-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.streak-number{
+    font-size:46px;
+    font-weight:800;
+    margin:25px 0 5px;
+}
+
+.streak-sub{
+    color:var(--muted);
+}
+
+.week{
+    display:flex;
+    justify-content:space-between;
+    margin-top:30px;
+}
+
+.day{
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+}
+
+.day-circle{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-bottom:7px;
+    background:#edf0ec;
+}
+
+.day.done .day-circle{
+    background:var(--green);
+    color:white;
+}
+
+/* =========================
+   TODAY
+========================= */
+
+.section{
+    margin-top:32px;
+}
+
+.section-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    margin-bottom:16px;
+}
+
+.section-heading h2{
+    font-size:24px;
+    letter-spacing:-.5px;
+}
+
+.section-heading span{
+    color:var(--muted);
+    font-size:14px;
+}
+
+.today-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:25px;
+
+    display:grid;
+    grid-template-columns:1.4fr 1fr;
+    gap:25px;
+
+    box-shadow:var(--shadow);
+}
+
+.lesson-cover{
+    min-height:220px;
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #dcebe2,
+            #f5eee1
+        );
+
+    padding:25px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:end;
+}
+
+.lesson-cover small{
+    color:var(--green);
+    font-weight:700;
+}
+
+.lesson-cover h3{
+    font-size:30px;
+    margin-top:7px;
+}
+
+.lesson-info{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.lesson-info p{
+    color:var(--muted);
+    line-height:1.7;
+    margin:10px 0 20px;
+}
+
+.lesson-meta{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.pill{
+    background:var(--surface-soft);
+    border-radius:30px;
+    padding:7px 11px;
+    font-size:12px;
+    color:var(--muted);
+}
+
+/* =========================
+   MODES
+========================= */
+
+.mode-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.mode-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:20px;
+
+    min-height:180px;
+
+    transition:.2s;
+}
+
+.mode-card:hover{
+    transform:translateY(-3px);
+    box-shadow:var(--shadow);
+}
+
+.mode-icon{
+    width:42px;
+    height:42px;
+    border-radius:13px;
+
+    background:var(--green-soft);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:19px;
+}
+
+.mode-card h3{
+    margin-top:18px;
+    font-size:16px;
+}
+
+.mode-card p{
+    margin-top:7px;
+    font-size:13px;
+    line-height:1.5;
+    color:var(--muted);
+}
+
+/* =========================
+   PRACTICE
+========================= */
+
+.practice-layout{
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:22px;
+}
+
+.context-panel{
+    background:#1d2922;
+    color:white;
+    border-radius:26px;
+    padding:30px;
+
+    min-height:600px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.context-label{
+    color:#9fc2ad;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-weight:700;
+}
+
+.context-panel h2{
+    font-size:31px;
+    line-height:1.15;
+    margin-top:14px;
+}
+
+.context-panel p{
+    color:#b8c4bc;
+    line-height:1.7;
+    margin-top:14px;
+}
+
+.scenario{
+    background:rgba(255,255,255,.08);
+    padding:16px;
+    border-radius:16px;
+    margin-top:20px;
+}
+
+.scenario span{
+    color:#9fc2ad;
+    font-size:12px;
+}
+
+.practice-main{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:26px;
+    padding:35px;
+    min-height:600px;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.practice-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.practice-header h2{
+    font-size:26px;
+}
+
+.practice-progress{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.ai-message{
+    margin:40px 0 20px;
+    padding:20px;
+    background:var(--surface-soft);
+    border-radius:18px;
+
+    font-size:18px;
+    line-height:1.6;
+}
+
+.translation{
+    color:var(--muted);
+    font-size:14px;
+    margin-top:8px;
+}
+
+.user-area{
+    margin-top:auto;
+    text-align:center;
+}
+
+.mic{
+    width:90px;
+    height:90px;
+
+    border-radius:50%;
+    border:0;
+
+    background:var(--green);
+    color:white;
+
+    font-size:30px;
+
+    box-shadow:
+        0 0 0 10px #e1eee7;
+
+    transition:.2s;
+}
+
+.mic:hover{
+    transform:scale(1.05);
+}
+
+.mic.recording{
+    animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+    0%{box-shadow:0 0 0 10px #e1eee7;}
+    50%{box-shadow:0 0 0 22px #d9ebe1;}
+    100%{box-shadow:0 0 0 10px #e1eee7;}
+}
+
+.mic-label{
+    margin-top:20px;
+    color:var(--muted);
+}
+
+.feedback{
+    margin-top:25px;
+    padding:20px;
+    background:#f2f6f2;
+    border-radius:17px;
+
+    display:none;
+}
+
+.feedback.show{
+    display:block;
+}
+
+.feedback-title{
+    font-weight:700;
+    color:var(--green);
+}
+
+.feedback p{
+    margin-top:7px;
+    color:var(--muted);
+    line-height:1.6;
+}
+
+.next-btn{
+    margin-top:18px;
+    border:0;
+    background:var(--text);
+    color:white;
+
+    padding:11px 17px;
+    border-radius:12px;
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress-hero{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:25px;
+    padding:30px;
+    margin-bottom:20px;
+}
+
+.level{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.level h1{
+    font-size:38px;
+}
+
+.progress-bar{
+    height:9px;
+    background:#e7eae6;
+    border-radius:20px;
+    margin-top:25px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    width:64%;
+    height:100%;
+    background:var(--green);
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.stat{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:22px;
+}
+
+.stat-value{
+    font-size:28px;
+    font-weight:800;
+}
+
+.stat-label{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* =========================
+   LIBRARY
+========================= */
+
+.library-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+}
+
+.library-card{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:22px;
+}
+
+.library-card h3{
+    margin-top:14px;
+}
+
+.library-card p{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.6;
+    margin-top:7px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+    .hero{
+        grid-template-columns:1fr;
+    }
+
+    .today-card{
+        grid-template-columns:1fr;
+    }
+
+    .mode-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .practice-layout{
+        grid-template-columns:1fr;
+    }
+
+    .context-panel{
+        min-height:auto;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .library-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:600px){
+
+    .navbar{
+        padding:0 18px;
+    }
+
+    .nav-links{
+        display:none;
+    }
+
+    .page{
+        padding:30px 18px 60px;
+    }
+
+    .hero h1{
+        font-size:38px;
+    }
+
+    .hero-main{
+        padding:30px;
+    }
+
+    .mode-grid,
+    .library-grid{
+        grid-template-columns:1fr;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+/* =========================
+   MOBILE NAV
+========================= */
+
+.mobile-nav{
+    display:none;
+}
+
+@media(max-width:600px){
+
+    .mobile-nav{
+        display:flex;
+        position:fixed;
+        bottom:0;
+        left:0;
+        right:0;
+
+        height:68px;
+
+        background:white;
+        border-top:1px solid var(--line);
+
+        z-index:200;
+
+        justify-content:space-around;
+        align-items:center;
+    }
+
+    .mobile-nav button{
+        border:0;
+        background:none;
+        color:var(--muted);
+        font-size:11px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+<!-- =========================
+NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        <div class="logo-mark">S</div>
+        SpeakFlow
+    </div>
+
+    <div class="nav-links">
+
+        <button
+            class="nav-btn active"
+            onclick="showPage('dashboard',this)">
+            Learn
+        </button>
+
+        <button
+            class="nav-btn"
+            onclick="showPage('practice',this)">
+            Practice
+        </button>
+
+        <button
+            class="nav-btn"
+            onclick="showPage('progress',this)">
+            Progress
+        </button>
+
+        <button
+            class="nav-btn"
+            onclick="showPage('library',this)">
+            Library
+        </button>
+
+    </div>
+
+    <div class="profile">
+        <span style="font-size:13px;color:var(--muted)">
+            12 day streak
+        </span>
+
+        <div class="avatar">
+            V
+        </div>
+    </div>
+
+</nav>
+
+
+<!-- =========================
+DASHBOARD
+========================= -->
+
+<main id="dashboard" class="page">
+
+    <section class="hero">
+
+        <div class="hero-main">
+
+            <div>
+
+                <div class="eyebrow">
+                    YOUR SPEAKING JOURNEY
+                </div>
+
+                <h1>
+                    Speak English<br>
+                    with confidence.
+                </h1>
+
+                <p>
+                    Practice real conversations, everyday situations,
+                    quick responses and free speaking — at your own level.
+                </p>
+
+            </div>
+
+            <button
+                class="primary-btn"
+                onclick="startPractice('Conversation')">
+                Continue today's practice →
+            </button>
+
+        </div>
+
+
+        <div class="streak-card">
+
+            <div class="streak-top">
+
+                <strong>
+                    Your streak
+                </strong>
+
+                <span>
+                    🔥
+                </span>
+
+            </div>
+
+            <div class="streak-number">
+                12
+            </div>
+
+            <div class="streak-sub">
+                days in a row
+            </div>
+
+            <div class="week">
+
+                <div class="day done">
+                    <div class="day-circle">✓</div>
+                    M
+                </div>
+
+                <div class="day done">
+                    <div class="day-circle">✓</div>
+                    T
+                </div>
+
+                <div class="day done">
+                    <div class="day-circle">✓</div>
+                    W
+                </div>
+
+                <div class="day done">
+                    <div class="day-circle">✓</div>
+                    T
+                </div>
+
+                <div class="day done">
+                    <div class="day-circle">✓</div>
+                    F
+                </div>
+
+                <div class="day">
+                    <div class="day-circle">S</div>
+                    S
+                </div>
+
+                <div class="day">
+                    <div class="day-circle">S</div>
+                    S
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- TODAY -->
+
+    <section class="section">
+
+        <div class="section-heading">
+
+            <h2>
+                Today's practice
+            </h2>
+
+            <span>
+                10 minutes
+            </span>
+
+        </div>
+
+
+        <div class="today-card">
+
+            <div class="lesson-cover">
+
+                <small>
+                    EVERYDAY ENGLISH · A2
+                </small>
+
+                <h3>
+                    A morning at the café
+                </h3>
+
+            </div>
+
+
+            <div class="lesson-info">
+
+                <h3>
+                    Order naturally, not perfectly.
+                </h3>
+
+                <p>
+                    Practice ordering coffee, asking about options,
+                    making a small request and responding naturally.
+                </p>
+
+                <div class="lesson-meta">
+
+                    <span class="pill">
+                        Conversation
+                    </span>
+
+                    <span class="pill">
+                        Role Play
+                    </span>
+
+                    <span class="pill">
+                        Quick Response
+                    </span>
+
+                </div>
+
+                <button
+                    class="primary-btn"
+                    onclick="startPractice('Conversation')">
+                    Start lesson
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MODES -->
+
+    <section class="section">
+
+        <div class="section-heading">
+
+            <h2>
+                Practice your way
+            </h2>
+
+            <span>
+                12 ways to speak
+            </span>
+
+        </div>
+
+
+        <div class="mode-grid">
+
+            <div class="mode-card"
+                 onclick="startPractice('Conversation')">
+
+                <div class="mode-icon">💬</div>
+
+                <h3>
+                    Conversation
+                </h3>
+
+                <p>
+                    Have a natural conversation with AI.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Role Play')">
+
+                <div class="mode-icon">🎭</div>
+
+                <h3>
+                    Role Play
+                </h3>
+
+                <p>
+                    Practice real-life situations.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Quick Response')">
+
+                <div class="mode-icon">⚡</div>
+
+                <h3>
+                    Quick Response
+                </h3>
+
+                <p>
+                    Think fast and answer naturally.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Listen & Retell')">
+
+                <div class="mode-icon">🎧</div>
+
+                <h3>
+                    Listen & Retell
+                </h3>
+
+                <p>
+                    Listen to a story and retell it.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Speak from a Scene')">
+
+                <div class="mode-icon">🖼</div>
+
+                <h3>
+                    Speak from a Scene
+                </h3>
+
+                <p>
+                    Look at a scene and describe it.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Free Speaking')">
+
+                <div class="mode-icon">🎙</div>
+
+                <h3>
+                    Free Speaking
+                </h3>
+
+                <p>
+                    Speak freely for 30 seconds or more.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Listen & Repeat')">
+
+                <div class="mode-icon">🔊</div>
+
+                <h3>
+                    Listen & Repeat
+                </h3>
+
+                <p>
+                    Build pronunciation and rhythm.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Sentence Builder')">
+
+                <div class="mode-icon">🧩</div>
+
+                <h3>
+                    Sentence Builder
+                </h3>
+
+                <p>
+                    Build a sentence, then say it.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('English Thinking')">
+
+                <div class="mode-icon">🧠</div>
+
+                <h3>
+                    English Thinking
+                </h3>
+
+                <p>
+                    Respond directly in English.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Story Builder')">
+
+                <div class="mode-icon">📖</div>
+
+                <h3>
+                    Story Builder
+                </h3>
+
+                <p>
+                    Build your own story step by step.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Pronunciation Lab')">
+
+                <div class="mode-icon">👄</div>
+
+                <h3>
+                    Pronunciation Lab
+                </h3>
+
+                <p>
+                    Work on sounds, stress and rhythm.
+                </p>
+
+            </div>
+
+
+            <div class="mode-card"
+                 onclick="startPractice('Real-life Challenge')">
+
+                <div class="mode-icon">🌍</div>
+
+                <h3>
+                    Real-life Challenge
+                </h3>
+
+                <p>
+                    Complete a realistic speaking task.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================
+PRACTICE PAGE
+========================= -->
+
+<main id="practice" class="page hidden">
+
+    <div class="practice-layout">
+
+        <aside class="context-panel">
+
+            <div>
+
+                <div class="context-label">
+                    CURRENT PRACTICE
+                </div>
+
+                <h2 id="practiceMode">
+                    Conversation
+                </h2>
+
+                <p id="practiceDescription">
+                    Have a natural conversation in a realistic everyday situation.
+                </p>
+
+                <div class="scenario">
+
+                    <span>
+                        SCENARIO
+                    </span>
+
+                    <p style="margin-top:7px;color:white">
+                        You are ordering breakfast
+                        at a café in London.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <div class="context-label">
+                    TODAY
+                </div>
+
+                <p style="margin-top:7px">
+                    6 minutes completed
+                </p>
+
+            </div>
+
+        </aside>
+
+
+        <section class="practice-main">
+
+            <div class="practice-header">
+
+                <h2>
+                    Your turn
+                </h2>
+
+                <div class="practice-progress">
+                    2 / 5
+                </div>
+
+            </div>
+
+
+            <div class="ai-message">
+
+                <strong>
+                    Barista:
+                </strong>
+
+                <br>
+
+                Good morning! What can I get for you today?
+
+                <div class="translation">
+                    早上好！今天想喝点什么？
+                </div>
+
+            </div>
+
+
+            <div class="user-area">
+
+                <button
+                    class="mic"
+                    id="micButton"
+                    onclick="toggleRecording()">
+
+                    🎙
+                    
+                </button>
+
+                <div
+                    class="mic-label"
+                    id="micLabel">
+
+                    Tap to speak
+                </div>
+
+
+                <div
+                    class="feedback"
+                    id="feedback">
+
+                    <div class="feedback-title">
+                        Nice job.
+                    </div>
+
+                    <p>
+                        Your meaning was clear.
+                        A more natural way to say it would be:
+                    </p>
+
+                    <p>
+                        <strong>
+                            “Could I have a latte, please?”
+                        </strong>
+                    </p>
+
+                    <button
+                        class="next-btn"
+                        onclick="nextQuestion()">
+
+                        Try again →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<!-- =========================
+PROGRESS
+========================= -->
+
+<main id="progress" class="page hidden">
+
+    <div class="progress-hero">
+
+        <div class="level">
+
+            <div>
+
+                <div class="eyebrow">
+                    CURRENT LEVEL
+                </div>
+
+                <h1>
+                    A2
+                </h1>
+
+            </div>
+
+            <div style="text-align:right">
+
+                <strong>
+                    64%
+                </strong>
+
+                <div style="color:var(--muted);font-size:13px">
+                    toward B1
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="progress-bar">
+
+            <div class="progress-fill"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat">
+
+            <div class="stat-value">
+                8h 24m
+            </div>
+
+            <div class="stat-label">
+                Speaking time
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-value">
+                12
+            </div>
+
+            <div class="stat-label">
+                Day streak
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-value">
+                427
+            </div>
+
+            <div class="stat-label">
+                Phrases practiced
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-value">
+                76%
+            </div>
+
+            <div class="stat-label">
+                Speaking confidence
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <section class="section">
+
+        <div class="section-heading">
+
+            <h2>
+                Your speaking journey
+            </h2>
+
+        </div>
+
+
+        <div class="library-grid">
+
+            <div class="library-card">
+
+                <div class="eyebrow">
+                    A0
+                </div>
+
+                <h3>
+                    Starting Out
+                </h3>
+
+                <p>
+                    Basic sounds, greetings,
+                    introductions and survival phrases.
+                </p>
+
+            </div>
+
+
+            <div class="library-card">
+
+                <div class="eyebrow">
+                    A1
+                </div>
+
+                <h3>
+                    Everyday Basics
+                </h3>
+
+                <p>
+                    Talk about yourself,
+                    family, food, time and routines.
+                </p>
+
+            </div>
+
+
+            <div class="library-card">
+
+                <div class="eyebrow">
+                    A2 · CURRENT
+                </div>
+
+                <h3>
+                    Everyday Conversations
+                </h3>
+
+                <p>
+                    Handle common situations
+                    with more confidence.
+                </p>
+
+            </div>
+
+
+            <div class="library-card">
+
+                <div class="eyebrow">
+                    B1
+                </div>
+
+                <h3>
+                    Independent Speaking
+                </h3>
+
+                <p>
+                    Explain experiences,
+                    opinions and plans.
+                </p>
+
+            </div>
+
+
+            <div class="library-card">
+
+                <div class="eyebrow">
+                    B2
+                </div>
+
+                <h3>
+                    Confident Expression
+                </h3>
+
+                <p>
+                    Express ideas naturally
+                    and discuss more complex topics.
+                </p>
+
+            </div>
+
+
+            <div class="library-card">
+
+                <div class="eyebrow">
+                    C1
+                </div>
+
+                <h3>
+                    Advanced Speaking
+                </h3>
+
+                <p>
+                    Speak precisely, flexibly
+                    and naturally in demanding situations.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================
+LIBRARY
+========================= -->
+
+<main id="library" class="page hidden">
+
+    <div class="section-heading">
+
+        <div>
+
+            <div class="eyebrow">
+                PRACTICE LIBRARY
+            </div>
+
+            <h2 style="margin-top:8px">
+                Choose what you want to speak about.
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="library-grid">
+
+        <div class="library-card">
+
+            <div class="mode-icon">
+                ☕
+            </div>
+
+            <h3>
+                Everyday Life
+            </h3>
+
+            <p>
+                Coffee shops, shopping,
+                routines, friends and daily conversations.
+            </p>
+
+        </div>
+
+
+        <div class="library-card">
+
+            <div class="mode-icon">
+                ✈️
+            </div>
+
+            <h3>
+                Travel
+            </h3>
+
+            <p>
+                Airports, hotels,
+                restaurants, directions and problems.
+            </p>
+
+        </div>
+
+
+        <div class="library-card">
+
+            <div class="mode-icon">
+                💼
+            </div>
+
+            <h3>
+                English for Work
+            </h3>
+
+            <p>
+                Meetings, emails,
+                presentations and workplace conversations.
+            </p>
+
+        </div>
+
+
+        <div class="library-card">
+
+            <div class="mode-icon">
+                🛍
+            </div>
+
+            <h3>
+                Shopping
+            </h3>
+
+            <p>
+                Ask about products,
+                prices, sizes, returns and recommendations.
+            </p>
+
+        </div>
+
+
+        <div class="library-card">
+
+            <div class="mode-icon">
+                ❤️
+            </div>
+
+            <h3>
+                Social English
+            </h3>
+
+            <p>
+                Small talk,
+                opinions, invitations and conversations.
+            </p>
+
+        </div>
+
+
+        <div class="library-card">
+
+            <div class="mode-icon">
+                🌎
+            </div>
+
+            <h3>
+                Real World
+            </h3>
+
+            <p>
+                Unexpected situations
+                that require spontaneous speaking.
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =========================
+MOBILE NAV
+========================= -->
+
+<div class="mobile-nav">
+
+    <button onclick="showPage('dashboard')">
+        🏠<br>Learn
+    </button>
+
+    <button onclick="showPage('practice')">
+        🎙<br>Practice
+    </button>
+
+    <button onclick="showPage('progress')">
+        📈<br>Progress
+    </button>
+
+    <button onclick="showPage('library')">
+        📚<br>Library
+    </button>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =========================
+PAGE SWITCHING
+========================= */
+
+function showPage(pageId, button){
+
+    document
+        .querySelectorAll("main.page")
+        .forEach(page=>{
+            page.classList.add("hidden");
+        });
+
+    const page =
+        document.getElementById(pageId);
+
+    if(page){
+        page.classList.remove("hidden");
+    }
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(btn=>{
+            btn.classList.remove("active");
+        });
+
+    if(button){
+        button.classList.add("active");
+    }
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+/* =========================
+PRACTICE DATA
+========================= */
+
+const practiceModes = {
+
+    "Conversation":{
+        description:
+        "Have a natural conversation in a realistic everyday situation."
+    },
+
+    "Role Play":{
+        description:
+        "Step into a real-life situation and respond naturally."
+    },
+
+    "Quick Response":{
+        description:
+        "You have only a few seconds to think and respond."
+    },
+
+    "Listen & Retell":{
+        description:
+        "Listen to a short story and retell it in your own words."
+    },
+
+    "Speak from a Scene":{
+        description:
+        "Look at a scene and explain what is happening."
+    },
+
+    "Free Speaking":{
+        description:
+        "Speak freely about a topic without a fixed answer."
+    },
+
+    "Listen & Repeat":{
+        description:
+        "Listen carefully and reproduce the sentence naturally."
+    },
+
+    "Sentence Builder":{
+        description:
+        "Build a sentence step by step, then say it aloud."
+    },
+
+    "English Thinking":{
+        description:
+        "Respond directly in English instead of translating."
+    },
+
+    "Story Builder":{
+        description:
+        "Build a short story using characters, places and events."
+    },
+
+    "Pronunciation Lab":{
+        description:
+        "Focus on pronunciation, stress, rhythm and connected speech."
+    },
+
+    "Real-life Challenge":{
+        description:
+        "Complete a realistic task from beginning to end."
+    }
+
+};
+
+
+/* =========================
+START PRACTICE
+========================= */
+
+function startPractice(mode){
+
+    showPage("practice");
+
+    document
+        .getElementById("practiceMode")
+        .textContent = mode;
+
+    document
+        .getElementById("practiceDescription")
+        .textContent =
+        practiceModes[mode]?.description ||
+        "Practice speaking naturally.";
+
+    document
+        .getElementById("feedback")
+        .classList.remove("show");
+
+    document
+        .getElementById("micLabel")
+        .textContent =
+        "Tap to speak";
+
+}
+
+
+/* =========================
+MICROPHONE
+========================= */
+
+let recording = false;
+
+let recognition = null;
+
+if(
+    "webkitSpeechRecognition" in window ||
+    "SpeechRecognition" in window
+){
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    recognition =
+        new SpeechRecognition();
+
+    recognition.lang = "en-US";
+
+    recognition.interimResults = false;
+
+    recognition.continuous = false;
+
+    recognition.onresult = function(event){
+
+        const transcript =
+            event.results[0][0].transcript;
+
+        showFeedback(transcript);
+
+    };
+
+    recognition.onerror = function(){
+
+        stopRecording();
+
+        showFeedback("");
+
+    };
+
+}
+
+
+function toggleRecording(){
+
+    if(recording){
+
+        stopRecording();
+
+    }else{
+
+        startRecording();
+
+    }
+
+}
+
+
+function startRecording(){
+
+    recording = true;
+
+    const button =
+        document.getElementById("micButton");
+
+    button.classList.add("recording");
+
+    document
+        .getElementById("micLabel")
+        .textContent =
+        "Listening... speak naturally";
+
+    if(recognition){
+
+        try{
+            recognition.start();
+        }catch(e){}
+
+    }else{
+
+        setTimeout(()=>{
+            showFeedback("");
+        },2000);
+
+    }
+
+}
+
+
+function stopRecording(){
+
+    recording = false;
+
+    const button =
+        document.getElementById("micButton");
+
+    button.classList.remove("recording");
+
+    document
+        .getElementById("micLabel")
+        .textContent =
+        "Tap to speak";
+
+    if(recognition){
+
+        try{
+            recognition.stop();
+        }catch(e){}
+
+    }
+
+}
+
+
+/* =========================
+FEEDBACK
+========================= */
+
+function showFeedback(transcript){
+
+    stopRecording();
+
+    const feedback =
+        document.getElementById("feedback");
+
+    feedback.classList.add("show");
+
+    if(transcript){
+
+        const p =
+            feedback.querySelector("p");
+
+        p.innerHTML =
+            `You said: <strong>
+            "${transcript}"
+            </strong><br><br>
+            Your meaning was clear.`;
+
+    }
+
+}
+
+
+/* =========================
+NEXT QUESTION
+========================= */
+
+function nextQuestion(){
+
+    document
+        .getElementById("feedback")
+        .classList.remove("show");
+
+    document
+        .getElementById("micLabel")
+        .textContent =
+        "Tap to speak";
+
+}
+
+
+/* =========================
+TEXT TO SPEECH
+========================= */
+
+function speakText(text){
+
+    if(
+        !("speechSynthesis" in window)
+    ) return;
+
+    const utterance =
+        new SpeechSynthesisUtterance(text);
+
+    utterance.lang = "en-US";
+
+    utterance.rate = .95;
+
+    speechSynthesis.speak(
+        utterance
+    );
+
+}
+
+
+/* =========================
+KEYBOARD SHORTCUT
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.code === "Space" &&
+            document
+            .getElementById("practice")
+            .classList
+            .contains("hidden") === false
+        ){
+
+            event.preventDefault();
+
+            toggleRecording();
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
